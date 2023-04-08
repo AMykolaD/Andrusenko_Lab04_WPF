@@ -1,6 +1,6 @@
-﻿using Andrusenko_Lab2_WPF;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Andrusenko_Lab04_WPF.Models;
 
 namespace Andrusenko_Lab04_WPF.Tools
 {

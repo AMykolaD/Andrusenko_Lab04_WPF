@@ -5,10 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="clr-namespace:Andrusenko_Lab04_WPF.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:PersonTableViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1300">
+        Title="MainWindow" Height="700" Width="1300"
+        IsEnabled="{Binding IsEnabled, UpdateSourceTrigger=PropertyChanged}"
+        Closing="Window_Closing">
     <Grid>
-        <DataGrid ItemsSource="{Binding Path=List}" SelectedIndex="{Binding SelectedRow}" Margin="0,61,493,64" SelectionMode="Single"/>
+        <DataGrid x:Name="UserDataGrid" ItemsSource="{Binding Path=List}" SelectedItem="{Binding SelectedPerson}" Margin="0,61,493,64" SelectionMode="Single" Sorting="DataGrid_Sorting">
+        </DataGrid>
         <Button Content="Save" HorizontalAlignment="Left" Margin="934,205,0,0" VerticalAlignment="Top" Command="{Binding CommandSave}"/>
         <Button Content="Delete" HorizontalAlignment="Left" Margin="934,263,0,0" VerticalAlignment="Top" Command="{Binding CommandDelete}"/>
+        <Button Content="Edit" HorizontalAlignment="Left" Margin="934,324,0,0" VerticalAlignment="Top" Command="{Binding CommandEdit}"/>
+        <Button Content="Add" HorizontalAlignment="Left" Margin="934,380,0,0" VerticalAlignment="Top" Command="{Binding CommandAdd}"/>
     </Grid>
 </Window>

@@ -2,16 +2,21 @@
 using System;
 using System.Globalization;
 using System.Net.Mail;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
-namespace Andrusenko_Lab2_WPF
+namespace Andrusenko_Lab04_WPF.Models
 {
     [Serializable]
     public class Person
     {
-        public string Name { get;}
-        public string Surname { get;}
-        public string Email { get;}
-        public string Birthdate { get;}
+        public string Name { get; }
+        public string Surname { get; }
+        public string Email { get; }
+        public string birthdateString;
+        [NonSerialized]
+        private readonly DateOnly birthdateVar;
+        public DateOnly Birthdate => birthdateVar; 
         public bool IsAdult { get; }
         public string SunSign { get; }
         public string ChineseSign { get; }
@@ -21,7 +26,8 @@ namespace Andrusenko_Lab2_WPF
             Name = name;
             Surname = surname;
             Email = email;
-            Birthdate = birthdate.ToString();
+            birthdateVar = birthdate;
+            birthdateString = birthdate.ToString();
             IsAdult = Age(birthdate) >= 18;
             SunSign = SunSignFromDate(birthdate);
             ChineseSign = ChineseSignFromDate(birthdate);
@@ -144,7 +150,7 @@ namespace Andrusenko_Lab2_WPF
         }
         private static bool IsTodayBirthday(DateOnly dateTime)
         {
-            return (dateTime.Day==DateTime.Now.Day) && (dateTime.Month == DateTime.Now.Month);
+            return (dateTime.Day == DateTime.Now.Day) && (dateTime.Month == DateTime.Now.Month);
         }
         public static int Age(DateOnly dateTime)
         {

@@ -1,8 +1,9 @@
 ﻿using Andrusenko_Lab04_WPF.Tools;
-using Andrusenko_Lab2_WPF;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Andrusenko_Lab04_WPF.Models;
+using Andrusenko_Lab04_WPF.Views;
 
 namespace Andrusenko_Lab04_WPF.ViewModels
 {
@@ -14,7 +15,9 @@ namespace Andrusenko_Lab04_WPF.ViewModels
 
         private RelayCommand? commandSave;
         private RelayCommand? commandDelete;
-        private int selectedRow;
+        private RelayCommand? commandEdit;
+        private RelayCommand? commandAdd;
+        private Person? selectedPerson;
 
         private bool isEnabled = true;
 
@@ -38,29 +41,42 @@ namespace Andrusenko_Lab04_WPF.ViewModels
                 return commandDelete ??= new RelayCommand(_ => ExecuteDelete(), CanExecuteDelete);
             }
         }
+        public RelayCommand CommandEdit
+        {
+            get
+            {
+                return commandEdit ??= new RelayCommand(_ => ExecuteEdit(), CanExecuteDelete);
+            }
+        }
+        public RelayCommand CommandAdd
+        {
+            get
+            {
+                return commandAdd ??= new RelayCommand(_ => ExecuteAdd(), CanExecuteSave);
+            }
+        }
 
         public ObservableCollection<Person> List
         {
             get => list;
             set => list = value;
         }
-        public int SelectedRow
-        {
-            get => selectedRow; set
+
+        public Person? SelectedPerson { get => selectedPerson; set
             {
-                selectedRow = value;
+                selectedPerson = value;
                 OnPropertyChanged();
             }
-        }
+            }
 
         public PersonTableViewModel()
         {
-            SelectedRow = -1;
             IsEnabled = true;
-            list = PersonListSaver.Get();
-            if (list.Count == 0)
+            bool isFileEmpty;
+            (list, isFileEmpty) = PersonListSaver.Get();
+            if (!isFileEmpty)
             {
-                for (int i = 0; i < 49; i++) list.Add(RandomPersonGenerator.GenerateRandomPerson());
+                for (int i = 0; i < 50; i++) list.Add(RandomPersonGenerator.GenerateRandomPerson());
             }
             PersonListSaver.Save(list);
         }
@@ -79,11 +95,22 @@ namespace Andrusenko_Lab04_WPF.ViewModels
         }
         private bool CanExecuteDelete(object obj)
         {
-            return IsEnabled&&SelectedRow!=-1;
+            return IsEnabled&&SelectedPerson!=null;
         }
         private void ExecuteDelete()
         {
-            list.RemoveAt(SelectedRow);
+            list.RemoveAt(list.IndexOf(SelectedPerson));
+        }
+
+        private void ExecuteAdd()
+        {
+            var window = new PersonCreationWindow(list);
+            window.Show();
+        }
+        private void ExecuteEdit()
+        {
+            var window = new PersonCreationWindow(list, SelectedPerson);
+            window.Show();
         }
     }
 }
