@@ -1,12 +1,6 @@
 ﻿using Andrusenko_Lab04_WPF.ViewModels;
 using System.Windows;
 using Andrusenko_Lab04_WPF.Tools;
-using System.Collections.ObjectModel;
-using Andrusenko_Lab04_WPF.Models;
-using System.Windows.Controls;
-using System.Linq;
-using System;
-using System.Collections.Generic;
 
 namespace Andrusenko_Lab04_WPF
 {
@@ -18,14 +12,16 @@ namespace Andrusenko_Lab04_WPF
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new PersonTableViewModel();
+            if(UserDataGrid==null) Close();
+            else
+            DataContext = new PersonTableViewModel(UserDataGrid);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             PersonListSaver.Save(((PersonTableViewModel)DataContext).List);
         }
-
+        /*
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
             try
@@ -39,11 +35,13 @@ namespace Andrusenko_Lab04_WPF
                 }
                 ((PersonTableViewModel)DataContext).List.Clear();
                 for (int i = 0; i < persons.Count; i++) ((PersonTableViewModel)DataContext).List.Add(persons[i]);
+
                 }, null);
+                UserDataGrid.Items.Filter = new Predicate<object>(item => ((Person)item).Name.Contains("e"));
             }
             catch (Exception)
             {
             }
-        }
+        }*/
     }
 }

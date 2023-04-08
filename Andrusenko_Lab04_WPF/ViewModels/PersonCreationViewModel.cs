@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using Andrusenko_Lab04_WPF.Models;
 
 namespace Andrusenko_Lab04_WPF.ViewModels

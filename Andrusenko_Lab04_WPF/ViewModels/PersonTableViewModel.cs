@@ -4,6 +4,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Andrusenko_Lab04_WPF.Models;
 using Andrusenko_Lab04_WPF.Views;
+using System.Windows.Controls;
+using System.Collections.Generic;
+using System;
 
 namespace Andrusenko_Lab04_WPF.ViewModels
 {
@@ -12,6 +15,11 @@ namespace Andrusenko_Lab04_WPF.ViewModels
         public event PropertyChangedEventHandler? PropertyChanged;
 
         ObservableCollection<Person> list;
+        private DataGrid dataGrid;
+        readonly List<string> choises = new List<string>{"Default", "Name", "Surname", "Email", "Birthdate",
+            "IsAdult", "SunSign", "ChineseSign", "IsBirthday"};
+        string choise;
+        string filter;
 
         private RelayCommand? commandSave;
         private RelayCommand? commandDelete;
@@ -69,8 +77,25 @@ namespace Andrusenko_Lab04_WPF.ViewModels
             }
             }
 
-        public PersonTableViewModel()
+        public List<string> Choises => choises;
+
+        public string Choise { get => choise; set {
+                choise = value;
+                OnPropertyChanged();
+                Filter = "";
+                RecreateFilter();
+            } }
+        public string Filter { get => filter; set {
+                filter = value;
+                OnPropertyChanged();
+                RecreateFilter();
+            } }
+
+        public PersonTableViewModel(DataGrid dataGrid)
         {
+            if (Choise == null) Choise = choises[0];
+            if (Filter == null) Filter = "";
+            this.dataGrid = dataGrid;
             IsEnabled = true;
             bool isFileEmpty;
             (list, isFileEmpty) = PersonListSaver.Get();
@@ -80,6 +105,15 @@ namespace Andrusenko_Lab04_WPF.ViewModels
             }
             PersonListSaver.Save(list);
         }
+
+        private void RecreateFilter()
+        {
+            if (dataGrid != null) { dataGrid.Items.Filter = null; }
+            else return;
+            if (Choise != choises[0])
+                dataGrid.Items.Filter = new Predicate<object>(item => (((Person)item).GetType().GetProperty(Choise).GetValue(item, null)).ToString().Contains(Filter));
+        }
+
         protected void OnPropertyChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
